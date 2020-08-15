@@ -1,9 +1,60 @@
-def get_word():
-    # open the file to get its contents
-    # choose one word at random to be The Word that should be guessed
-    word = "pig"  # change this to the word you choose from the file
-    return word
+from random import choice
+from math import inf
 
+
+
+
+# 
+def random_select_word(minl: int, maxl: int) -> str:
+    with open("words.txt", "rt") as infile:
+        words = [w for w in infile if minl <= len(w) <= maxl]
+        return choice(words)
+"""
+# open the file to get its contents
+def read_words():
+    with open("words.txt", "rt") as infile:
+        # Create an empty list to hold the lines of the file
+        listx = []
+        # loop through the lines of the file
+        for words in infile:
+            # add the line to the output list
+            listx.append(words) 
+
+        # return the output list
+        return listx
+
+def filter_by_lengths(wordlist: list, minlen: int, maxlen: int) -> list:
+   #Return a new list created from the elements of wordlist
+        whose length is no less than minlen and no greater than maxlen.
+    
+    # Create a list to store the elements we want to keep from wordlist
+    listy = []
+    # Loop through the input list
+    for words in wordlist:
+            if minlen <= len(words) <= maxlen:
+                listy.append(words) 
+
+    return listy 
+ """   
+
+def get_desired_difficulty() -> str:
+    """ Prompt the user to enter 'easy',
+        'medium', or 'hard'. If the user
+        enters any other value, let them know
+        this is not a valid option, and prompt
+        them to guess again. Once the user
+        has entered a valid option, return
+        the user input. (while and input loop)
+    ."""
+    while True:
+        msg = input("Enter: easy, normal, hard")
+        msg = msg.lower()
+        
+        if msg not in ("easy", "normal", "hard"):
+            print("please choose anactual game difficulty available")
+        else:
+            return msg
+ 
 
 def get_user_guess():
     guess = input("Guess a letter ")
@@ -21,10 +72,27 @@ def show_blanks_or_letters(word):
     print(output)
 
 
-def play_game():
-    # choose a word
-    word = get_word()
 
+def play_game():
+    #pick difficulty
+    difficulty = get_desired_difficulty()
+
+    #  'easy' => minlen = 4, maxlen = 6
+    if difficulty == "easy":
+        minlen = 4
+        maxlen = 6
+
+    elif difficulty == "normal":
+        minlen = 6
+        maxlen = 8
+    
+    # assert: the value of difficulty is "hard"
+    else: 
+        minlen = 8
+        maxlen = inf
+
+    word = random_select_word(minlen, maxlen)    
+    
     # show the user blanks for each letter in the word
     show_blanks_or_letters(word)
     # have some way for the user to make a guess
@@ -51,6 +119,18 @@ def play_game():
     # show the blanks/filled-in-letters to the user again
     # Ask user for a guess again...
 
+def run_tests():
+    print("running tests!")
+    print("Testing random_select_word")
+    word = random_select_word(4, 12)
+    print(word)
+
 
 if __name__ == "__main__":
-    play_game()
+    import sys
+    
+    if "-t" in sys.argv or "--test" in sys.argv:
+        run_tests()
+
+    else:
+        play_game()
